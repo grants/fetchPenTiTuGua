@@ -46,15 +46,27 @@ def shownews(number):
 				show+=s
 			print show
 			print "------------------------------------------------------------------"
+			return True
 		else:
 			print "nothing find"
+			return False
 	except Exception,e:
 		print e
+		return False
 
 startNumber=input("Please input begin search url id number: ")
 stopNumber=input("Pleaser input end search url id number: ")
 
 for i in range(startNumber, stopNumber+1):
-	shownews(i)
+	ret=shownews(i)
+	if ret:
+		answer=raw_input("Next[y/n, defalut:y]? : ") or 'y'
+		if (answer=='y'):
+			continue
+		else:
+			os._exit(0)
+	else:
+		continue
 
+os._exit(0)
 
