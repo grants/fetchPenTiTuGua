@@ -1,10 +1,13 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 # python
-from urllib import urlopen
+#from urllib import urlopen
+import urllib2
+import ssl
 from BeautifulSoup import BeautifulSoup
 import requests
-import os, errno
+import os
+import errno
 import re
 import random
 import socket
@@ -17,12 +20,14 @@ def mkdir_p(path):
 	except OSError as exc:
 		if exc.errno==errno.EEXIST and os.path.isdir(path):
 			pass
-		else: raise
+		else: 
+			raise
 
 def shownews(number):
-	url="http://dapenti.com/blog/more.asp?name=tupian&id="+str(number)
+	url="https://dapenti.com/blog/more.asp?name=tupian&id="+str(number)
 	try:
-		webpagesrc=urlopen(url).read()
+		context=ssl._create_unverified_context()
+		webpagesrc=urllib2.urlopen(url, context=context).read()
 		uhtml=unicode(webpagesrc,"gbk")
 		soup=BeautifulSoup(uhtml)
 		srcend=soup.originalEncoding
