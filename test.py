@@ -4,12 +4,20 @@
 from urllib import urlopen
 from BeautifulSoup import BeautifulSoup
 import requests
-import os
+import os, errno
 import re
 import random
 import socket
 
-socket.setdefaulttimeout(10)
+socket.setdefaulttimeout(30)
+
+def mkdir_p(path):
+	try:
+		os.makedirs(path)
+	except OSError as exc:
+		if exc.errno==errno.EEXIST and os.path.isdir(path):
+			pass
+		else: raise
 
 def shownews(number):
 	url="http://dapenti.com/blog/more.asp?name=tupian&id="+str(number)
@@ -28,7 +36,11 @@ def shownews(number):
 				continue
 		if (imgp):
 			imgsrc=imgp['src']
-			downloadpicpath="~/camp/pentitugua/"+str(number)+".jpg"
+			picturedir="/home/qihao/camp/pentitugua/picture"
+			if not os.path.exists(picturedir):
+				mkdir_p(picturedir)
+			downloadpicpath=picturedir+"/"+str(number)+".jpg"
+			sentencefile="/home/qihao/camp/pentitugua/sentence.txt"
 			if os.path.exists(downloadpicpath):
 				pass
 			else:
@@ -38,13 +50,17 @@ def shownews(number):
 			thetext=textp.renderContents()
 			print "------------------------------------------------------------------"
 			os.system("tycat "+downloadpicpath)
-
 			showtext=re.sub("&nbsp;","",re.sub("<[^>]*?>","",thetext))
 			show=""
 			for s in showtext.splitlines():
 				s=s.rstrip()
 				show+=s
 			print show
+			if (show!=""):
+				sentenceToFile="["+str(number)+"] "+show+"\n"
+				fp=open(sentencefile,'a+')
+				fp.write(sentenceToFile)
+				fp.close()
 			print "------------------------------------------------------------------"
 			return True
 		else:
