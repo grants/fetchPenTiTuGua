@@ -12,8 +12,6 @@ import re
 import random
 import socket
 
-socket.setdefaulttimeout(30)
-
 def mkdir_p(path):
 	try:
 		os.makedirs(path)
@@ -41,11 +39,11 @@ def shownews(number):
 				continue
 		if (imgp):
 			imgsrc=imgp['src']
-			picturedir="/home/qihao/camp/pentitugua/picture"
+			picturedir="/home/qihao/cherry/pentitugua/picture"
 			if not os.path.exists(picturedir):
 				mkdir_p(picturedir)
 			downloadpicpath=picturedir+"/"+str(number)+".jpg"
-			sentencefile="/home/qihao/camp/pentitugua/sentence.txt"
+			sentencefile="/home/qihao/cherry/pentitugua/sentence.txt"
 			if os.path.exists(downloadpicpath):
 				pass
 			else:
@@ -75,19 +73,22 @@ def shownews(number):
 		print e
 		return False
 
-startNumber=input("Please input begin search url id number: ")
-stopNumber=input("Pleaser input end search url id number: ")
-
-for i in range(startNumber, stopNumber+1):
-	ret=shownews(i)
-	if ret:
-		answer=raw_input("Next[y/n, defalut:y]? : ") or 'y'
-		if (answer=='y'):
-			continue
+try:
+	socket.setdefaulttimeout(30)
+	startNumber=input("Please input begin search url id number: ")
+	stopNumber=input("Pleaser input end search url id number: ")
+	for i in range(startNumber, stopNumber+1):
+		ret=shownews(i)
+		if ret:
+			answer=raw_input("Next[y/n, defalut:y]? : ") or 'y'
+			if (answer=='y'):
+				continue
+			else:
+				os._exit(0)
 		else:
-			os._exit(0)
-	else:
-		continue
+			continue
+	os._exit(0)
+except Exception,e:
+	os._exit(-1)
 
-os._exit(0)
 
